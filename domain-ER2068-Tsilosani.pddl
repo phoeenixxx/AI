@@ -1,0 +1,53 @@
+(define (domain blocks-world)
+  (:requirements :strips :typing :negative-preconditions :quantified-preconditions)
+  (:types block)
+  (:predicates
+    (on ?x - block ?y - block)
+    (onfloor ?x - block)
+    (clear ?x - block)
+    (holding ?x - block)
+    (handempty)
+  )
+  (:action pickup-from-floor
+    :parameters (?b - block)
+    :precondition (and (onfloor ?b) (clear ?b) (handempty))
+    :effect (and
+      (holding ?b)
+      (not (onfloor ?b))
+      (not (clear ?b))
+      (not (handempty))
+    )
+  )
+  (:action pickup-from-block
+    :parameters (?b - block ?x - block)
+    :precondition (and (on ?b ?x) (clear ?b) (handempty))
+    :effect (and
+      (holding ?b)
+      (clear ?x)
+      (not (on ?b ?x))
+      (not (clear ?b))
+      (not (handempty))
+    )
+  )
+  (:action putdown-on-floor
+    :parameters (?b - block)
+    :precondition (holding ?b)
+    :effect (and
+      (onfloor ?b)
+      (clear ?b)
+      (handempty)
+      (not (holding ?b))
+    )
+  )
+  (:action putdown-on-block
+    :parameters (?x - block ?b - block)
+    :precondition (and (holding ?b) (clear ?x))
+    :effect (and
+      (on ?b ?x)
+      (clear ?b)
+      (handempty)
+      (not (holding ?b))
+      (not (clear ?x))
+    )
+  )
+)
